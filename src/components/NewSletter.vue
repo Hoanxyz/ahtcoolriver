@@ -71,6 +71,7 @@
   padding: 18px 17px;
   border: none;
   flex-grow: 1;
+  outline: none;
 }
 
 .action-newsletter button {

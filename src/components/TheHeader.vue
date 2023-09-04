@@ -1,6 +1,6 @@
 <template>
   <header>
-    <div v-if="$apollo.queries.headerTop.loading">Loading...</div>
+    <div v-if="$apollo.queries.headerTop.loading"><div class="loader"></div></div>
     <div class="header-top-bar-wrapper">
       <div class="mobile-item" v-for="item in headerTop.items" :key="item">
         <div v-html="item.content"></div>
@@ -70,8 +70,12 @@
   import gql from 'graphql-tag'
   import MenuSlideout from "@/components/MenuSlideout.vue"
   import MenuNavigation from "@/components/MenuNavigation.vue"
+  import { GET_CMS_BLOCKS } from "@/grapql/query_cms.js"
+  import { ref } from 'vue'
 
   const $ = window.$
+
+  const headerTopId = ref('header-top-bar');
 
   export default {
     name: "TheHeader",
@@ -82,8 +86,9 @@
     data() {
       return {
         config: '',
+        headerTopId,
         headerTop: '',
-        headerContact: ''
+        headerContact: '',
       };
     },
     apollo: {
@@ -93,13 +98,15 @@
           header_logo_src
         },
       }`,
-      headerTop: gql`query {
-        headerTop: cmsBlocks(identifiers: ["header-top-bar"]) {
-          items {
-            content
-          }
+      headerTop:  {
+        query: GET_CMS_BLOCKS,
+        variables() {
+            return {
+              identifiers: this.headerTopId,
+            };
         },
-      }`,
+        update: data => data.cmsBlocks
+      },
       headerContact: gql`query {
         headerContact: cmsBlocks(identifiers: ["header-contact"]) {
           items {
@@ -371,6 +378,7 @@ img.pagebuilder-mobile-hidden {
   flex-grow: 1;
   padding-left: 16px;
   border: none;
+  outline: none;
 }
 
 .header-desktop .search-bar input {

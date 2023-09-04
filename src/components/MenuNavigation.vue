@@ -92,6 +92,7 @@
 }
 
 .menu-navigation .menu-lv2 {
+  display: flex;
   position: absolute;
   pointer-events: none;
   top: 100%;

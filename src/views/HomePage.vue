@@ -1,17 +1,17 @@
 <template>
-  <div class="index-index" v-html="home.content"></div>
+  <div class="index-index" v-html="home"></div>
   <NewSletter />
   <TopSellers />
   <ExclusiveDeals />
   <CustomerReviews />
 </template>
 <script>
-  import gql from 'graphql-tag';
+  import { GET_CMS_PAGE } from "@/grapql/query_cms.js"
   import NewSletter from '@/components/NewSletter.vue';
   import TopSellers from '@/components/TopSellers.vue';
   import CustomerReviews from '@/components/CustomerReviews.vue';
   import ExclusiveDeals from '@/components/ExclusiveDeals.vue';
-  
+
   const $ = window.$
 
   export default {
@@ -29,11 +29,17 @@
       ExclusiveDeals
     },
     apollo: {
-      home: gql`query {
-        home: cmsPage(identifier: "home") {
-          content
+      home: {
+        query: GET_CMS_PAGE,
+        variables() {
+            return {
+              identifier: 'home',
+            };
         },
-      }`,
+        update (data) {
+          return data.cmsPage.content.replaceAll('href="https://magentoapi.merket.io', 'href="product').replaceAll('.html', '')
+        }
+      }
     },
     updated: function () {
       //align height for elements
