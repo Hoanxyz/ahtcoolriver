@@ -51,6 +51,11 @@
   margin: 0;
 }
 
+.customer-reviews {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
 .customer-reviews-block {
   margin: -124px 0 -138px;
 }
@@ -206,6 +211,7 @@
 
   .customer-reviews-block .pagebuilder-column-group {
     padding: 60px 32px;
+    margin: 0;
   }
 }
 </style>

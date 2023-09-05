@@ -1,13 +1,11 @@
 <template>
   <div class="exclusive-deals-block">
-    <div v-for="item in exclusiveDeals.items" :key="item">
-      <div v-html="item.content"></div>
-    </div>
+    <div v-html="exclusiveDeals"></div>
   </div>
 </template>
 
 <script>
-  import gql from 'graphql-tag'
+  import { GET_CMS_BLOCKS } from "@/grapql/query_cms.js"
 
   const $ = window.$
 
@@ -19,13 +17,17 @@
       };
     },
     apollo: {
-      exclusiveDeals: gql`query {
-        exclusiveDeals: cmsBlocks(identifiers: ["exclusive-deals"]) {
-          items {
-            content
-          }
+      exclusiveDeals: {
+        query: GET_CMS_BLOCKS,
+        variables() {
+            return {
+              identifiers: 'exclusive-deals',
+            };
         },
-      }`,
+        update (data) {
+          return data.cmsBlocks.items[0].content.replaceAll('href="https://magentoapi.merket.io', 'href="product').replaceAll('.html', '')
+        }
+      }
     },
     updated: function () {
       //align height for elements
@@ -236,6 +238,7 @@
 
   .exclusive-deals-block h3 {
     font-size: 42px;
+    padding: 0;
   }
 
   .exclusive-deals .widget-product-grid {
@@ -248,6 +251,7 @@
     max-width: 1280px;
     padding: 0 20px;
     margin: 0 auto;
+    box-sizing: border-box;
   }
 
   .exclusive-deals .widget-product-grid .product-item-details {

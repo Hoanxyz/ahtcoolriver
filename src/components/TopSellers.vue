@@ -1,13 +1,11 @@
 <template>
   <div class="top-sellers-block">
-    <div v-for="item in topSellers.items" :key="item">
-      <div v-html="item.content"></div>
-    </div>
+    <div v-html="topSellers"></div>
   </div>
 </template>
 
 <script>
-  import gql from 'graphql-tag'
+  import { GET_CMS_BLOCKS } from "@/grapql/query_cms.js"
 
   const $ = window.$
 
@@ -19,13 +17,17 @@
       };
     },
     apollo: {
-      topSellers: gql`query {
-        topSellers: cmsBlocks(identifiers: ["top-sellers"]) {
-          items {
-            content
-          }
+      topSellers: {
+        query: GET_CMS_BLOCKS,
+        variables() {
+            return {
+              identifiers: 'top-sellers',
+            };
         },
-      }`,
+        update (data) {
+          return data.cmsBlocks.items[0].content.replaceAll('href="https://magentoapi.merket.io', 'href="product').replaceAll('.html', '')
+        }
+      }
     },
     updated: function () {
       //align height for elements
@@ -250,6 +252,7 @@
     max-width: 1280px;
     padding: 64px 20px;
     margin: 0 auto;
+    box-sizing: border-box;
   }
 
   .top-sellers {
