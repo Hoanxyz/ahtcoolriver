@@ -3,111 +3,116 @@
 	<!-- Desktop content -->
 	<div class="content-desktop">
 		<h2 class="category-title">{{ categories.items[0].name }}</h2>
-		<div class="sidebar">
-			<div class="filtered-box">
-				<h2 class="heading">FILTERED BY</h2>
-				<!-- add filter here -->
-				<div v-if="colorOption" class="filtered-category">
-					<img src="../assets/close_icon.png" @click="unselectColor"> Color: {{ colorOption }}	
-				</div>
-				<div v-if="sizeOption" class="filtered-category">
-					<img src="../assets/close_icon.png" @click="unselectSize"> Size: {{ sizeOption }}	
-				</div>
-				<div v-if="priceOption" class="filtered-category">
-					<img src="../assets/close_icon.png" @click="unselectPrice"> Price: {{ priceOption }}$	
-				</div>
-				
-				<p class="clear-button" @click="unselectAll">Clear all</p>
-			</div>
-			<div class="category-box">
-				<div class="category">
-					<h2 class="heading">TYPES</h2>
-					<!-- add types here -->
+		<div class="category-content">
+			<div class="sidebar">
+				<div class="filtered-box">
+					<h2 class="heading">FILTERED BY</h2>
+					<!-- add filter here -->
+					<div v-if="colorOption" class="filtered-category">
+						<img src="../assets/close_icon.png" @click="unselectColor"> Color: {{ colorOption }}	
+					</div>
+					<div v-if="sizeOption" class="filtered-category">
+						<img src="../assets/close_icon.png" @click="unselectSize"> Size: {{ sizeOption }}	
+					</div>
+					<div v-if="priceOption" class="filtered-category">
+						<img src="../assets/close_icon.png" @click="unselectPrice"> Price: {{ priceOption }}$	
+					</div>
 					
+					<p class="clear-button" @click="unselectAll">Clear all</p>
 				</div>
-				<div class="category">
-					<h2 class="heading">FEATURES</h2>
-					<!-- add features here -->
-					<div class="filter" data-content-type="text">
-						<h3>COLOR</h3>
-						<div v-for="aggregation in products.aggregations" :key="aggregation.count">
-							<div v-if="aggregation.attribute_code == 'colour'">
-								<p class="filter-text" v-for="option in aggregation.options" :key="option.value" @click="selectColor(option.label)">
-									{{ option.label }} ({{ option.count }})
-								</p>
+				<div class="category-box">
+					<div class="category">
+						<h2 class="heading">TYPES</h2>
+						<!-- add types here -->
+						
+					</div>
+					<div class="category">
+						<h2 class="heading">FEATURES</h2>
+						<!-- add features here -->
+						<div class="filter" data-content-type="text">
+							<h3>COLOR</h3>
+							<div v-for="aggregation in products.aggregations" :key="aggregation.count">
+								<div v-if="aggregation.attribute_code == 'colour'">
+									<p class="filter-text" v-for="option in aggregation.options" :key="option.value" @click="selectColor(option.label)">
+										{{ option.label }} ({{ option.count }})
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="filter" data-content-type="text">
+							<h3>SIZE</h3>
+							<div v-for="aggregation in products.aggregations" :key="aggregation.count">
+								<div v-if="aggregation.attribute_code == 'size'">
+									<p class="filter-text" v-for="option in aggregation.options" :key="option.value" @click="selectSize(option.label)">
+										{{ option.label }} ({{ option.count }})
+									</p>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="filter" data-content-type="text">
-						<h3>SIZE</h3>
-						<div v-for="aggregation in products.aggregations" :key="aggregation.count">
-							<div v-if="aggregation.attribute_code == 'size'">
-								<p class="filter-text" v-for="option in aggregation.options" :key="option.value" @click="selectSize(option.label)">
-									{{ option.label }} ({{ option.count }})
-								</p>
-							</div>
-						</div>
+					<div class="category">
+						<h2 class="heading">BRANDS</h2>
+						<!-- add brands here -->
+						
 					</div>
-				</div>
-				<div class="category">
-					<h2 class="heading">BRANDS</h2>
-					<!-- add brands here -->
-					
-				</div>
-				<div class="category">
-					<h2 class="heading">PRICE</h2>
-					<!-- add price here -->
-					<div class="filter" data-content-type="text">
-						<!-- <h3>Price</h3> -->
-						<div v-for="aggregation in products.aggregations" :key="aggregation.count">
-							<div v-if="aggregation.attribute_code == 'price'">
-								<p class="filter-text" v-for="option in aggregation.options" :key="option.value" @click="selectPrice(option.label)">
-									{{ option.label }}$ ({{ option.count }})
-								</p>
+					<div class="category">
+						<h2 class="heading">PRICE</h2>
+						<!-- add price here -->
+						<div class="filter" data-content-type="text">
+							<!-- <h3>Price</h3> -->
+							<div v-for="aggregation in products.aggregations" :key="aggregation.count">
+								<div v-if="aggregation.attribute_code == 'price'">
+									<p class="filter-text" v-for="option in aggregation.options" :key="option.value" @click="selectPrice(option.label)">
+										{{ option.label }}$ ({{ option.count }})
+									</p>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="product-box">
-			<div class="product-header" v-if="products.total_count > 0">
-				<div class="product-sort">
-					<label for="sort-select">Sort by:</label>
-					<select id="sort-select" v-model="currentSort" @change="changeSort(currentSort)">
-						<option v-for="option in sortOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
-					</select>
-				</div>
-				<div class="paginator">
-					<button @click="previousPage" :disabled="currentPage === 1">Previous</button>
-					<span>{{ currentPage }}</span>
-					<button @click="nextPage(products.page_info)" :disabled="currentPage === products.page_info.total_pages">Next</button>
-				</div>
-				<div class="product-show">
-					<label for="show-select">Show:</label>
-					<select id="show-select" v-model="pageSize" @change="changeSize(pageSize)">
-						<option v-for="option in pageSizeOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
-					</select>
-					per page.
-				</div>
-			</div>
-			<div class="product-content">
-				<div class="product-category" v-if="products">
-					<div class="product-container" v-for="product in products.items" :key="product.sku">
-						<a :href="'/product/' + product.sku" class="router-link"	>
-							<img :src="product.thumbnail.url" alt="Product Thumbnail">
-							<p class="product-name">{{ product.name }}</p>
-							<p class="product-price">{{ product.price_range.minimum_price.regular_price.value }} {{ product.price_range.minimum_price.regular_price.currency }}</p>
-						</a>
+			
+			<div class="product-box">
+				<div class="product-header" v-if="products.total_count > 0">
+					<div class="product-sort">
+						<label for="sort-select">Sort by:</label>
+						<select id="sort-select" v-model="currentSort" @change="changeSort(currentSort)">
+							<option v-for="option in sortOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+						</select>
+						<!-- <vue-select :options="sortOptions.label" :key="sortOptions.value" :value="sortOptions.value" v-model="currentSort" @change="changeSort(currentSort)">
+						</vue-select> -->
 					</div>
-					<p v-if="products.total_count === 0">No products available.</p>
+					<div class="paginator">
+						<button @click="previousPage" :disabled="currentPage === 1">Previous</button>
+						<span>{{ currentPage }}</span>
+						<button @click="nextPage(products.page_info)" :disabled="currentPage === products.page_info.total_pages">Next</button>
+					</div>
+					<div class="product-show">
+						<label for="show-select">Show:</label>
+						<select id="show-select" v-model="pageSize" @change="changeSize(pageSize)">
+							<option v-for="option in pageSizeOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+						</select>
+						per page.
+					</div>
 				</div>
-			</div>
-			<div class="product-footer" v-if="products.total_count > 0">
-				<div class="paginator">
-					<button @click="previousPage" :disabled="currentPage === 1">Previous</button>
-					<span>{{ currentPage }}</span>
-					<button @click="nextPage(products.page_info)" :disabled="currentPage === products.page_info.total_pages">Next</button>
+				<div class="product-content">
+					<div class="product-category" v-if="products">
+						<div class="product-container" v-for="product in products.items" :key="product.sku">
+							<a :href="'/product/' + product.sku" class="router-link"	>
+								<img :src="product.thumbnail.url" alt="Product Thumbnail">
+								<p class="product-name">{{ product.name }}</p>
+								<p class="product-price">{{ product.price_range.minimum_price.regular_price.value }} {{ product.price_range.minimum_price.regular_price.currency }}</p>
+							</a>
+						</div>
+						<p v-if="products.total_count === 0">No products available.</p>
+					</div>
+				</div>
+				<div class="product-footer" v-if="products.total_count > 0">
+					<div class="paginator">
+						<button @click="previousPage" :disabled="currentPage === 1">Previous</button>
+						<span>{{ currentPage }}</span>
+						<button @click="nextPage(products.page_info)" :disabled="currentPage === products.page_info.total_pages">Next</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -239,6 +244,7 @@
 	import { GET_CATEGORIES } from '@/grapql/query_category';
 	import { GET_PRODUCT_FILTER } from '@/grapql/query_product';
 	import NewSletter from '@/components/NewSletter.vue';
+	// import { VueSelect } from 'vue-select';
 	const $ = window.$
 
 	export default {
@@ -248,6 +254,7 @@
 		},
 		components: {
 			NewSletter,
+			// VueSelect,
 		},
 		data() {
 			return {
@@ -386,7 +393,7 @@
 	}
 </script>
 <style scoped>
-
+@import "vue-select/dist/vue-select.css";
 
 .content-desktop {
 	display: none;
@@ -408,18 +415,18 @@
 
 .sidebar-slideout-content {
 	background: #fff;
-	position: absolute;
+	position: fixed;
 	top: 0;
 	width: 90%;
 	left: -100%;
 	transition: all 0.3s;
 	z-index: 99;
+	height: 100vh;
 }
 
 .sidebar-slideout.active .sidebar-slideout-content {
 	left: 0;
-	height: 300vh;
-	overflow-y: auto;
+	overflow-y: scroll;
 }
 
 .sidebar-slideout-content .sidebar-header {
@@ -449,6 +456,27 @@
 	letter-spacing: 0;
 	line-height: 34px;
 	text-align: center;
+	border-bottom: 1px solid #EEEEEE;
+	padding-bottom: 50px;
+	margin-bottom: 0;
+}
+
+.paginator {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+button {
+	color: #4A4A4A;
+    font-family: Montserrat;
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 26px;
+	padding: 0 20px;
+	border: none;
+	background: none;
+	cursor: pointer;
 }
 
 .router-link {
@@ -461,12 +489,11 @@
 	display: flex;
 	flex-direction: column;
 	column-gap: 15px;
-	width: 18%;
-	
+	max-width: 244px;
 }
 
 .filtered-box {
-	padding-left: 15px;
+	
 	box-sizing: border-box;
 	height: fit-content;
 	border: 1px solid #EEEEEE;
@@ -496,12 +523,16 @@
 .filtered-box h2 {
 	font-weight: 500;
 	padding: 20px 0 17px;
+	padding-left: 15px;
+	margin: 0;
 	color: #000000;
 	font-family: Oswald;
+	font-size: 15px;
 	letter-spacing: 0.5px;
 	line-height: 17px;
 	display: flex;
 	justify-content: space-between;
+	border-bottom: 1px solid #EBEBEB;
 }
 
 .category {
@@ -516,10 +547,12 @@
 
 .category h2 {
 	font-weight: 500;
-	padding: 20px 0 17px;
+	padding: 0 173px 18px 0;
+	margin-bottom: 0;
 	color: #000000;
 	font-family: Oswald;
 	letter-spacing: 0.5px;
+	font-size: 15px;
 	line-height: 17px;
 	display: flex;
 	justify-content: space-between;
@@ -547,7 +580,7 @@
 .filter-text, option, label, select {
 	color: #4A4A4A;
 	font-family: Montserrat;
-	font-size: 14px;
+	font-size: 13px;
 	letter-spacing: 0;
 	line-height: 26px;
 	cursor: pointer;
@@ -578,11 +611,12 @@
 	width: fit-content;
 	color: #000000;
 	font-family: Montserrat;
-	font-size: 16px;
+	font-size: 13px;
 	letter-spacing: 0;
 	line-height: 22px;
 	cursor: pointer;
 	text-decoration: underline;
+	padding-left: 15px;
 }
 
 .filter {
@@ -594,6 +628,7 @@
 	font-family: Oswald;
 	letter-spacing: 0.5px;
 	line-height: 17px;
+	font-size: 14px;
 }
 
 .category-box {
@@ -609,6 +644,10 @@
 
 select {
 	height: 40px;
+	border: 1px solid #E4E4E4;
+	border-radius: 3px;
+	margin: 0 10px;
+	padding: 0 14px;
 }
 
 .sidebar-slideout {
@@ -628,17 +667,20 @@ select {
 .product-show {
 	display: flex;
 	align-items: center;
+	color: #4A4A4A;
+	font-family: Montserrat;
+	font-size: 14px;
 }
 
 .product-box {
-	width: 100%;
+	max-width: 1280px;
 	margin: 0;
 }
 
 .product-header {
 	display: flex;
 	justify-content: space-between;
-	padding: 0 20px 0 20px;
+	padding: 0 16px;
 }
 
 .product-content {
@@ -648,11 +690,14 @@ select {
 }
 
 .product-category {
-	display: flex;
-	flex-wrap: wrap;
-	margin-top: 24px;
-	justify-content: center;
-	column-gap: 10px;
+	display: grid;
+	max-width: 1240px;
+	padding: 0 10px;
+	margin: 0 auto;
+	box-sizing: border-box;
+	grid-template-columns: repeat(2,1fr);
+	grid-gap: 8px 5px;
+	margin-top: 10px;
 }
 
 .product-container {
@@ -660,24 +705,25 @@ select {
 	margin: 5px;
 }
 
-
-
 .product-name {
-	font-size: 20px;
-	text-decoration: none;
-	font-family: Montserrat;
+	height: 54px;
+	width: 173px;
 	color: #111111;
+	font-family: Montserrat;
+	font-size: 14px;
 	font-weight: 500;
 	letter-spacing: 0;
 	line-height: 18px;
 }
 
 .product-price {
+	height: 24px;
+	width: fit-content;
 	color: #D0021B;
 	font-family: Montserrat;
 	font-size: 20px;
 	font-weight: 500;
-	letter-spacing: 0;
+	letter-spacing: 0;	
 	line-height: 24px;
 }
 
@@ -704,14 +750,28 @@ select {
 		display: none;
 	}
 
+	.product-name {
+		height: 36px;
+		width: 224px;
+	}
+
+	.category-content {
+		display: flex;
+		max-width: 1240px;
+		padding: 32px 20px;
+		margin: 0 auto;
+		box-sizing: border-box;
+	}
+
 	.product-box {
 		margin-left: 40px;
-		width: 58%;
+		
 	}
 
 	.product-category {
-		justify-content: left;
-		column-gap: 21px;
+		display: grid;
+		grid-template-columns: repeat(4,1fr);
+		grid-gap: 40px 20px;
 	}
 
 	.product-container img {
